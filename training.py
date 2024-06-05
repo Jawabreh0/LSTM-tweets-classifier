@@ -9,10 +9,10 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 import json
 
 # Load datasets
-train_normal = pd.read_csv('dataset/training_dataset/training')
-train_harmful = pd.read_csv('harmful.csv')
-test_normal = pd.read_csv('testing-normal.csv')
-test_harmful = pd.read_csv('testing-harmful.csv')
+train_normal = pd.read_csv('/Users/cypruscodes/Desktop/Bandar_Project/ltsm-tweets-classifier/dataset/training_dataset/normal.csv')
+train_harmful = pd.read_csv('/Users/cypruscodes/Desktop/Bandar_Project/ltsm-tweets-classifier/dataset/training_dataset/harmful.csv')
+test_normal = pd.read_csv('/Users/cypruscodes/Desktop/Bandar_Project/ltsm-tweets-classifier/dataset/testing_dataset/testing-normal.csv')
+test_harmful = pd.read_csv('/Users/cypruscodes/Desktop/Bandar_Project/ltsm-tweets-classifier/dataset/testing_dataset/testing-harmful.csv')
 
 # Add labels
 train_normal['label'] = 0
@@ -27,6 +27,10 @@ test_data = pd.concat([test_normal, test_harmful], axis=0)
 # Shuffle datasets
 train_data = train_data.sample(frac=1).reset_index(drop=True)
 test_data = test_data.sample(frac=1).reset_index(drop=True)
+
+# Ensure all tweet values are strings and drop any rows with missing values
+train_data['tweet'] = train_data['tweet'].astype(str)
+test_data['tweet'] = test_data['tweet'].astype(str)
 
 # Tokenization
 tokenizer = Tokenizer()
@@ -75,13 +79,13 @@ print(f"Recall: {recall:.4f}")
 print(f"F1 Score: {f1:.4f}")
 
 # Save the trained model using the recommended format
-model.save('trained-models/tweet_classifier_model.keras')
+model.save('/Users/cypruscodes/Desktop/Bandar_Project/ltsm-tweets-classifier/trained-models/tweet_classifier_model.keras')
 
 # Save the tokenizer to a JSON file for later use
 tokenizer_json = tokenizer.to_json()
-with open('trained-models/tokenizer.json', 'w', encoding='utf-8') as f:
+with open('/Users/cypruscodes/Desktop/Bandar_Project/ltsm-tweets-classifier/trained-models/tokenizer.json', 'w', encoding='utf-8') as f:
     f.write(json.dumps(tokenizer_json, ensure_ascii=False))
 
 # Save the max_length used during training
-with open('trained-models/max_length.json', 'w') as f:
+with open('/Users/cypruscodes/Desktop/Bandar_Project/ltsm-tweets-classifier/trained-models/max_length.json', 'w') as f:
     json.dump(max_length, f)
