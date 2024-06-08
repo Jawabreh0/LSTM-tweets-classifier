@@ -5,14 +5,16 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Embedding, Dropout
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
 import json
 
 # Load datasets
-train_normal = pd.read_csv('/Users/cypruscodes/Desktop/Bandar_Project/ltsm-tweets-classifier/dataset/training_dataset/normal.csv')
-train_harmful = pd.read_csv('/Users/cypruscodes/Desktop/Bandar_Project/ltsm-tweets-classifier/dataset/training_dataset/harmful.csv')
-test_normal = pd.read_csv('/Users/cypruscodes/Desktop/Bandar_Project/ltsm-tweets-classifier/dataset/testing_dataset/testing-normal.csv')
-test_harmful = pd.read_csv('/Users/cypruscodes/Desktop/Bandar_Project/ltsm-tweets-classifier/dataset/testing_dataset/testing-harmful.csv')
+train_normal = pd.read_csv('/Users/cypruscodes/Desktop/Bandar_Project/lstm-tweets-classifier/dataset/training_dataset/normal.csv')
+train_harmful = pd.read_csv('/Users/cypruscodes/Desktop/Bandar_Project/lstm-tweets-classifier/dataset/training_dataset/harmful.csv')
+test_normal = pd.read_csv('/Users/cypruscodes/Desktop/Bandar_Project/lstm-tweets-classifier/dataset/testing_dataset/testing-normal.csv')
+test_harmful = pd.read_csv('/Users/cypruscodes/Desktop/Bandar_Project/lstm-tweets-classifier/dataset/testing_dataset/testing-harmful.csv')
 
 # Add labels
 train_normal['label'] = 0
@@ -71,12 +73,23 @@ accuracy = accuracy_score(test_data['label'], predictions)
 precision = precision_score(test_data['label'], predictions)
 recall = recall_score(test_data['label'], predictions)
 f1 = f1_score(test_data['label'], predictions)
+conf_matrix = confusion_matrix(test_data['label'], predictions)
 
 # Print evaluation results
 print(f"Accuracy: {accuracy:.4f}")
 print(f"Precision: {precision:.4f}")
 print(f"Recall: {recall:.4f}")
 print(f"F1 Score: {f1:.4f}")
+print("Confusion Matrix:")
+print(conf_matrix)
+
+# Plot confusion matrix
+plt.figure(figsize=(10, 7))
+sns.heatmap(conf_matrix, annot=True, fmt="d", cmap='Blues', xticklabels=['Normal', 'Harmful'], yticklabels=['Normal', 'Harmful'])
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix')
+plt.show()
 
 # Save the trained model using the recommended format
 model.save('/Users/cypruscodes/Desktop/Bandar_Project/ltsm-tweets-classifier/trained-models/tweet_classifier_model.keras')
